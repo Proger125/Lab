@@ -1,0 +1,18 @@
+commit 43df9e101c92b6292eee4f89f3704916c85fd8c6 (HEAD -> git_3)
+Author: Proger_125 <sanek.dyachenka2002@mail.ru>
+Date:   Fri Oct 1 11:38:42 2021 +0300
+
+    updating doubtingFile
+
+commit 2835c83496b79b7a332d223c031ac946ceead0ce
+Author: Proger_125 <sanek.dyachenka2002@mail.ru>
+Date:   Fri Oct 1 11:37:34 2021 +0300
+
+    adding doubtingFile
+
+commit 4ce63377dea273c0b9e4f4bc07e5f0c31c4cd398 (git_task)
+Merge: 4c51846 4474bff
+Author: Proger_125 <alexdyachenka@gmail.com>
+Date:   Thu Sep 16 15:14:32 2021 +0300
+
+    Merge branch 'git_0' into git_task

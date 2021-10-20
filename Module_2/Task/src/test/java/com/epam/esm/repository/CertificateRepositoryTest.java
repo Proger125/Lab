@@ -2,6 +2,9 @@ package com.epam.esm.repository;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.DirtiesContext;
@@ -10,11 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -34,7 +33,7 @@ public class CertificateRepositoryTest {
         tags.add(new Tag(6, "winter"));
 
         GiftCertificate certificate = new GiftCertificate(1, "birthday", "Happy birthday",
-                new BigDecimal("100"), 10, new Date(), new Date(), tags);
+                new BigDecimal("100"), 10, new DateTime(), new DateTime(), tags);
 
         int result = repository.save(certificate);
 
@@ -50,10 +49,11 @@ public class CertificateRepositoryTest {
         certificate.setPrice(new BigDecimal(1000));
         certificate.setDuration(14);
 
-        TemporalAccessor accessor = DateTimeFormatter.ISO_INSTANT.parse("2005-08-09T18:31:42.201Z");
-        Instant instant = Instant.from(accessor);
-        certificate.setCreateDate(Date.from(instant));
-        certificate.setLastUpdateDate(Date.from(instant));
+        DateTimeFormatter parser = ISODateTimeFormat.dateTime();
+        DateTime createDate = parser.parseDateTime("2005-08-09T18:31:42.201Z");
+
+        certificate.setCreateDate(createDate);
+        certificate.setLastUpdateDate(createDate);
 
         List<Tag> tags = new ArrayList<>();
         tags.add(new Tag(1, "summer"));
@@ -76,10 +76,11 @@ public class CertificateRepositoryTest {
         certificate.setPrice(new BigDecimal(1000));
         certificate.setDuration(14);
 
-        TemporalAccessor accessor = DateTimeFormatter.ISO_INSTANT.parse("2005-08-09T18:31:42.201Z");
-        Instant instant = Instant.from(accessor);
-        certificate.setCreateDate(Date.from(instant));
-        certificate.setLastUpdateDate(Date.from(instant));
+        DateTimeFormatter parser = ISODateTimeFormat.dateTime();
+        DateTime createDate = parser.parseDateTime("2005-08-09T18:31:42.201Z");
+
+        certificate.setCreateDate(createDate);
+        certificate.setLastUpdateDate(createDate);
 
         List<Tag> tags = new ArrayList<>();
         tags.add(new Tag(1, "summer"));
@@ -89,6 +90,73 @@ public class CertificateRepositoryTest {
         certificates.add(certificate);
 
         List<GiftCertificate> result = repository.getAll();
+        assertEquals(certificates, result);
+    }
+
+    @Test
+    public void shouldDeleteCertificateById(){
+        int result = repository.delete(1);
+        assertEquals(2, result);
+    }
+
+    @Test
+    public void shouldDeleteAllCertificates(){
+        int result = repository.deleteAll();
+        assertEquals(2, result);
+    }
+
+    @Test
+    public void shouldUpdateCertificateById(){
+        GiftCertificate certificate = new GiftCertificate();
+        certificate.setId(1);
+        certificate.setName("Holiday certificate");
+        certificate.setDescription("The best holidays in your life!");
+        certificate.setPrice(new BigDecimal(1000));
+        certificate.setDuration(14);
+
+        DateTimeFormatter parser = ISODateTimeFormat.dateTime();
+        DateTime createDate = parser.parseDateTime("2005-08-09T18:31:42.201Z");
+
+        certificate.setCreateDate(createDate);
+        certificate.setLastUpdateDate(createDate);
+
+        List<Tag> tags = new ArrayList<>();
+        tags.add(new Tag(1, "summer"));
+        tags.add(new Tag(2, "winter"));
+
+        certificate.setTags(tags);
+
+        GiftCertificate updatedCertificate = repository.update(1, certificate);
+
+        assertEquals(certificate, updatedCertificate);
+    }
+
+    @Test
+    public void shouldGetCertificatesByTagName(){
+        List<GiftCertificate> certificates = new ArrayList<>();
+
+        GiftCertificate certificate = new GiftCertificate();
+        certificate.setId(1);
+        certificate.setName("Holiday certificate");
+        certificate.setDescription("The best holidays in your life!");
+        certificate.setPrice(new BigDecimal(1000));
+        certificate.setDuration(14);
+
+        DateTimeFormatter parser = ISODateTimeFormat.dateTime();
+        DateTime createDate = parser.parseDateTime("2005-08-09T18:31:42.201Z");
+
+        certificate.setCreateDate(createDate);
+        certificate.setLastUpdateDate(createDate);
+
+        List<Tag> tags = new ArrayList<>();
+        tags.add(new Tag(1, "summer"));
+
+        certificate.setTags(tags);
+
+        certificates.add(certificate);
+
+        List<GiftCertificate> result = repository.getByTagName("summer");
+
         assertEquals(certificates, result);
     }
 }

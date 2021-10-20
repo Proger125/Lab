@@ -18,7 +18,7 @@ CREATE TABLE certificate
     description varchar(200) NOT NULL ,
     price decimal NOT NULL ,
     duration int NOT NULL ,
-    create_date varchar(25) NOT NULL ,
-    last_update_date varchar(25) NOT NULL,
+    create_date varchar(40) NOT NULL ,
+    last_update_date varchar(40) NOT NULL,
     PRIMARY KEY (id)
 );

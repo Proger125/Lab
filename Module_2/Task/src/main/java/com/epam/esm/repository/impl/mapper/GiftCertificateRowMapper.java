@@ -8,6 +8,10 @@ import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 
 import static com.epam.esm.repository.impl.ColumnName.*;
+
+/**
+ * Row mapper for {@link GiftCertificate}
+ */
 public class GiftCertificateRowMapper implements RowMapper<GiftCertificate> {
     @SneakyThrows
     @Override

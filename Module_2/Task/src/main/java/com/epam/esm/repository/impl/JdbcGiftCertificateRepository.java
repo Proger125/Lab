@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import static com.epam.esm.repository.impl.ColumnName.*;
+
 @Repository
 public class JdbcGiftCertificateRepository implements GiftCertificateRepository {
 
@@ -64,7 +66,7 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
                     format.format(certificate.getCreateDate()),
                     format.format(certificate.getLastUpdateDate()));
             long certificateId = template.queryForObject(GET_CERTIFICATE_ID_BY_INFO,
-                    (rs, rowNum) -> rs.getLong("id"), certificate.getName(),
+                    (rs, rowNum) -> rs.getLong(ID), certificate.getName(),
                     certificate.getDescription(), certificate.getPrice(), certificate.getDuration());
 
             for (var tag : certificate.getTags()){
@@ -84,7 +86,7 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
     public GiftCertificate getById(long id) throws RepositoryException {
         try{
             GiftCertificate certificate = template.queryForObject(GET_CERTIFICATE_BY_ID_SQL, new GiftCertificateRowMapper(), id);
-            List<Long> tagsId = template.query(GET_TAGS_ID_BY_CERTIFICATE_ID_SQL, (rs, rowNum) -> rs.getLong("tag_id"), id);
+            List<Long> tagsId = template.query(GET_TAGS_ID_BY_CERTIFICATE_ID_SQL, (rs, rowNum) -> rs.getLong(TAG_ID), id);
             List<Tag> tags = new ArrayList<>();
             for (var tagId : tagsId){
                 Tag tag = template.queryForObject(GET_TAG_BY_ID, new TagRowMapper(), tagId);
@@ -108,7 +110,7 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
             certificates = template.query(GET_ALL_CERTIFICATES, new GiftCertificateRowMapper());
             for (var certificate : certificates){
                 List<Long> tagsId = template.query(GET_TAGS_ID_BY_CERTIFICATE_ID_SQL,
-                        (rs, rowNum) -> rs.getLong("tag_id"), certificate.getId());
+                        (rs, rowNum) -> rs.getLong(TAG_ID), certificate.getId());
                 List<Tag> tags = new ArrayList<>();
                 for (var tagId : tagsId){
                     Tag tag = template.queryForObject(GET_TAG_BY_ID, new TagRowMapper(), tagId);
@@ -195,7 +197,7 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
                 if (!oldTags.contains(newTag)){
                     oldTags.add(newTag);
                     template.update(INSERT_TAG_IF_NOT_EXISTS, newTag.getName(), newTag.getName());
-                    long tagId = template.queryForObject(GET_TAG_ID_BY_NAME, (rs, rowNum) -> rs.getLong("id"), newTag.getName());
+                    long tagId = template.queryForObject(GET_TAG_ID_BY_NAME, (rs, rowNum) -> rs.getLong(ID), newTag.getName());
                     template.update(INSERT_CERTIFICATE_TAG_CONNECTION_SQL, id, tagId);
                 }
             }

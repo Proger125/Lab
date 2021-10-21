@@ -6,6 +6,10 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import static com.epam.esm.repository.impl.ColumnName.*;
+
+/**
+ * Row mapper for {@link Tag}
+ */
 public class TagRowMapper implements RowMapper<Tag> {
     @Override
     public Tag mapRow(ResultSet rs, int rowNum) throws SQLException {

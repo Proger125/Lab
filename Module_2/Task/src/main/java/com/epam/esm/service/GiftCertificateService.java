@@ -6,10 +6,6 @@ import com.epam.esm.exception.ServiceException;
 import java.util.List;
 
 public interface GiftCertificateService extends CRDService<GiftCertificate>{
+    List<GiftCertificate> getAll(String tag, String search, String sort) throws ServiceException;
     GiftCertificate update(long id, GiftCertificate certificate) throws ServiceException;
-    List<GiftCertificate> getByTagName(String tagName) throws ServiceException;
-    List<GiftCertificate> getByPartOfName(String namePart) throws ServiceException;
-    List<GiftCertificate> getByPartOfDesc(String descPart) throws ServiceException;
-    List<GiftCertificate> getAllCertificatesSortedByParamASC(String param) throws ServiceException;
-    List<GiftCertificate> getAllCertificatesSortedByParamDESC(String param) throws ServiceException;
 }

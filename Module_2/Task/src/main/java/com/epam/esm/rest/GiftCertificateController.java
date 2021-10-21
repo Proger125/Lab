@@ -37,7 +37,7 @@ public class GiftCertificateController {
             @RequestParam(value = "sort", defaultValue = "", required = false) String sort
     ){
         try{
-            List<GiftCertificate> certificates = service.getAll();
+            List<GiftCertificate> certificates = service.getAll(tag, search, sort);
             if (certificates.isEmpty()){
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -86,60 +86,6 @@ public class GiftCertificateController {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
             return new ResponseEntity<>(newCertificate, HttpStatus.OK);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping(value = "/certificates?tag={tagName}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<GiftCertificate>> getCertificatesByTagName(@PathVariable("tagName")
-                                                                                      String tagName){
-        try{
-            List<GiftCertificate> certificates = service.getByTagName(tagName);
-            if (certificates.isEmpty()){
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(certificates, HttpStatus.OK);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping(value = "/certificates?search={namePart}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<GiftCertificate>> getCertificatesByNamePart(@PathVariable("namePart")
-                                                                           String namePart){
-        try{
-            List<GiftCertificate> certificates = service.getByPartOfName(namePart);
-            if (certificates.isEmpty()){
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(certificates, HttpStatus.OK);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping(value = "/certificates?sort=name_asc", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<GiftCertificate>> getCertificatesSortedByParamASC(){
-        try{
-            List<GiftCertificate> certificates = service.getAllCertificatesSortedByParamASC("name");
-            if (certificates.isEmpty()){
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(certificates, HttpStatus.OK);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping(value = "/certificates?sort=name_desc", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<GiftCertificate>> getCertificatesSortedByParamDESC(){
-        try{
-            List<GiftCertificate> certificates = service.getAllCertificatesSortedByParamDESC("name");
-            if (certificates.isEmpty()){
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(certificates, HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

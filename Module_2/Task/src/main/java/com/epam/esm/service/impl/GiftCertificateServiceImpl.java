@@ -5,11 +5,15 @@ import com.epam.esm.exception.RepositoryException;
 import com.epam.esm.exception.ServiceException;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.util.SearchUtil;
+import com.epam.esm.util.SortUtil;
+import com.epam.esm.util.impl.GiftCertificateSearchUtil;
+import com.epam.esm.util.impl.GiftCertificateSortUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -36,9 +40,28 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> getAll() throws ServiceException {
+    public List<GiftCertificate> getAll(String tag, String search, String sort) throws ServiceException {
+        SortUtil<GiftCertificate> sortUtil = new GiftCertificateSortUtil();
+        SearchUtil<GiftCertificate> searchUtil = new GiftCertificateSearchUtil();
         try{
-            return repository.getAll();
+            List<GiftCertificate> certificates = repository.getAll();
+            if (!Objects.equals(tag, "")){
+                certificates = searchUtil.getEntityByTagName(certificates, tag);
+            }
+            if (!Objects.equals(search, "")){
+                certificates = searchUtil.getEntityByNamePart(certificates, search);
+            }
+            if (!Objects.equals(sort, "")){
+                String param = sort.substring(0, sort.indexOf("_"));
+                String type = sort.substring(sort.indexOf("_") + 1);
+                if (type.equals("asc")){
+                    sortUtil.sortASC(certificates, param);
+                }
+                if (type.equals("desc")){
+                    sortUtil.sortDESC(certificates, param);
+                }
+            }
+            return certificates;
         } catch (RepositoryException e) {
             throw new ServiceException("Unable to execute getAll() request in GiftCertificateService", e);
         }
@@ -70,74 +93,4 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             throw new ServiceException("Unable to execute update() request in GiftCertificateService");
         }
     }
-
-    @Override
-    public List<GiftCertificate> getByTagName(String tagName) throws ServiceException {
-        try{
-            return repository.getByTagName(tagName);
-        } catch (RepositoryException e) {
-            throw new ServiceException("Unable to execute getByTagName() request in GiftCertificateService", e);
-        }
-    }
-
-    @Override
-    public List<GiftCertificate> getByPartOfName(String namePart) throws ServiceException {
-        try{
-            return repository.getByPartOfName(namePart);
-        } catch (RepositoryException e) {
-            throw new ServiceException("Unable to execute getByPartOfName() request in GiftCertificateService", e);
-        }
-    }
-
-    @Override
-    public List<GiftCertificate> getByPartOfDesc(String descPart) throws ServiceException {
-        try {
-            return repository.getByPartOfDescription(descPart);
-        } catch (RepositoryException e) {
-            throw new ServiceException("Unable to execute getByPartOfDesc() request in GiftCertificateService", e);
-        }
-    }
-
-    @Override
-    public List<GiftCertificate> getAllCertificatesSortedByParamASC(String param) throws ServiceException {
-        try {
-            List<GiftCertificate> certificates = repository.getAll();
-            switch (param){
-                case "name":{
-                    certificates.sort(Comparator.comparing(GiftCertificate::getName));
-                    break;
-                }
-                case "date":{
-                    certificates.sort(Comparator.comparing(GiftCertificate::getCreateDate));
-                    break;
-                }
-            }
-
-            return certificates;
-        } catch (RepositoryException e) {
-            throw new ServiceException("Unable to execute getAllCertificateSortedByParamASC() request in GiftCertificateService", e);
-        }
-    }
-
-    @Override
-    public List<GiftCertificate> getAllCertificatesSortedByParamDESC(String param) throws ServiceException {
-        try {
-            List<GiftCertificate> certificates = repository.getAll();
-            switch (param){
-                case "name":{
-                    certificates.sort(Comparator.comparing(GiftCertificate::getName).reversed());
-                    break;
-                }
-                case "date":{
-                    certificates.sort(Comparator.comparing(GiftCertificate::getCreateDate).reversed());
-                    break;
-                }
-            }
-
-            return certificates;
-        } catch (RepositoryException e) {
-            throw new ServiceException("Unable to execute getAllCertificateSortedByParamASC() request in GiftCertificateService", e);
-        }
-    }
-
 }

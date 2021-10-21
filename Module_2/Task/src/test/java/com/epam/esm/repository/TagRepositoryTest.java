@@ -56,8 +56,7 @@ public class TagRepositoryTest {
 
     @Test
     public void shouldDeleteTagById() throws RepositoryException {
-        int result = repository.delete(1);
-        assertEquals(1, result);
+        repository.delete(1);
 
         List<Tag> tags = new ArrayList<>();
         tags.add(new Tag(2, "winter"));
@@ -71,8 +70,11 @@ public class TagRepositoryTest {
 
     @Test
     public void shouldDeleteAllTags() throws RepositoryException {
-        int result = repository.deleteAll();
+        repository.deleteAll();
 
-        assertEquals(4, result);
+        List<Tag> tags = new ArrayList<>();
+        List<Tag> resultList = repository.getAll();
+
+        assertEquals(tags, resultList);
     }
 }

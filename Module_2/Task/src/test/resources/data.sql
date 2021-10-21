@@ -37,8 +37,8 @@ VALUES
  'The best holidays in your life!',
  1000,
  14,
- '2005-08-09T18:31:42.201Z',
- '2005-08-09T18:31:42.201Z'
+ '2005-08-09T18:31:42+03',
+ '2005-08-09T18:31:42+03'
 );
 
 INSERT INTO certificate_tag

@@ -19,12 +19,12 @@ public class GiftCertificate extends Entity{
     private String description;
     private BigDecimal price;
     private int duration;
-    private DateTime createDate;
-    private DateTime lastUpdateDate;
+    private Date createDate;
+    private Date lastUpdateDate;
     private List<Tag> tags;
 
     public GiftCertificate(long id, String name, String description, BigDecimal price, int duration,
-                           DateTime createDate, DateTime lastUpdateDate, List<Tag> tags){
+                           Date createDate, Date lastUpdateDate, List<Tag> tags){
         super(id);
         this.name = name;
         this.description = description;

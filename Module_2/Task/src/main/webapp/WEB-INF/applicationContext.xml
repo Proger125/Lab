@@ -27,7 +27,7 @@
         <constructor-arg name="dataSource" ref="dataSource"/>
     </bean>
     <!--<bean id="giftService" class="com.epam.esm.service.impl.GiftCertificateServiceImpl"/>-->
-    <bean id="giftRepository" class="com.epam.esm.repository.impl.JdbcGiftCertificateRepository"/>
+    <!--<bean id="giftRepository" class="com.epam.esm.repository.impl.JdbcGiftCertificateRepository"/>-->
 
 
 </beans>

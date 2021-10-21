@@ -1,6 +1,7 @@
 package com.epam.esm.repository;
 
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.RepositoryException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.DirtiesContext;
@@ -24,7 +25,7 @@ public class TagRepositoryTest {
     TagRepository repository;
 
     @Test
-    public void shouldSaveTag(){
+    public void shouldSaveTag() throws RepositoryException {
         Tag tag = new Tag();
         tag.setName("summer");
         int result = repository.save(tag);
@@ -32,7 +33,7 @@ public class TagRepositoryTest {
     }
 
     @Test
-    public void shouldGetTagById(){
+    public void shouldGetTagById() throws RepositoryException {
         Tag tag = new Tag();
         tag.setId(1);
         tag.setName("summer");
@@ -41,7 +42,7 @@ public class TagRepositoryTest {
     }
 
     @Test
-    public void shouldGetAllTags(){
+    public void shouldGetAllTags() throws RepositoryException {
         List<Tag> tags = new ArrayList<>();
         tags.add(new Tag(1, "summer"));
         tags.add(new Tag(2, "winter"));
@@ -54,7 +55,7 @@ public class TagRepositoryTest {
     }
 
     @Test
-    public void shouldDeleteTagById(){
+    public void shouldDeleteTagById() throws RepositoryException {
         int result = repository.delete(1);
         assertEquals(1, result);
 
@@ -69,7 +70,7 @@ public class TagRepositoryTest {
     }
 
     @Test
-    public void shouldDeleteAllTags(){
+    public void shouldDeleteAllTags() throws RepositoryException {
         int result = repository.deleteAll();
 
         assertEquals(4, result);

@@ -1,0 +1,17 @@
+Insert certificate
+{
+    "name" : "Holiday certificate",
+    "description" : "The best certificate for holiday vacation",
+    "price" : 2000,
+    "duration" : 10,
+    "createDate" : "2005-08-09T18:31:42.201Z",
+    "lastUpdateDate" : "2005-08-09T18:31:42.201Z",
+    "tags" : [
+        {
+            "name" : "holiday"
+        },
+        {
+            "name" : "summer"
+        }
+    ]
+}

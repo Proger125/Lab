@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 public class TagRepositoryTest {
 
     @Inject
-    TagRepository repository;
+    private TagRepository repository;
 
     @Test
     public void shouldSaveTag() throws RepositoryException {

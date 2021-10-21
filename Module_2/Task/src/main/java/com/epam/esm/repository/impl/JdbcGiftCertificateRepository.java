@@ -35,8 +35,6 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
             "(certificate_id, tag_id) VALUES (?, ?)";
     private static final String GET_CERTIFICATE_BY_ID_SQL = "SELECT id, name, description, price, duration, " +
             "create_date, last_update_date FROM certificate WHERE id = ?";
-    private static final String GET_CERTIFICATES_ID_BY_TAG_ID = "SELECT certificate_id " +
-            "FROM certificate_tag WHERE tag_id = ?";
     private static final String GET_TAGS_ID_BY_CERTIFICATE_ID_SQL = "SELECT tag_id FROM certificate_tag WHERE certificate_id = ?";
     private static final String GET_TAG_BY_ID = "SELECT id, name FROM tag WHERE id = ?";
     private static final String GET_ALL_CERTIFICATES = "SELECT id, name, description, price, duration, " +
@@ -48,10 +46,6 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
     private static final String DELETE_ALL_CERTIFICATE_TAG_CONNECTION = "DELETE FROM certificate_tag";
     private static final String UPDATE_CERTIFICATE_BY_ID = "UPDATE certificate SET name = ?, " +
             "description = ?, price = ?, duration = ?, create_date = ?, last_update_date = ?";
-    private static final String GET_CERTIFICATE_ID_BY_NAME_PART = "SELECT id FROM certificate " +
-            "WHERE name LIKE ?";
-    private static final String GET_CERTIFICATE_ID_BY_DESC_PART = "SELECT id FROM certificate " +
-            "WHERE description LIKE ?";
 
     @Autowired
     private JdbcTemplate template;
@@ -218,57 +212,5 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
             throw new RepositoryException("Unable to handle update() request in GiftCertificateRepository", e);
         }
 
-    }
-
-    @Override
-    public List<GiftCertificate> getByTagName(String tagName) throws RepositoryException {
-        try{
-            long tagId = template.queryForObject(GET_TAG_ID_BY_NAME,
-                    (rs, rowNum) -> rs.getLong("id"), tagName);
-            List<Long> certificatesId = template.query(GET_CERTIFICATES_ID_BY_TAG_ID,
-                    (rs, rowNum) -> rs.getLong("certificate_id"), tagId);
-            List<GiftCertificate> certificates = new ArrayList<>();
-            for (var certificateId : certificatesId){
-                certificates.add(getById(certificateId));
-            }
-            return certificates;
-        }catch (DataAccessException e){
-            throw new RepositoryException("Unable to handle getByTagName() request in GiftCertificateRepository", e);
-        }
-    }
-
-    @Override
-    public List<GiftCertificate> getByPartOfName(String namePart) throws RepositoryException {
-        try{
-            List<Long> certificatesId = getCertificatesIdByPart(GET_CERTIFICATE_ID_BY_NAME_PART, namePart);
-            List<GiftCertificate> certificates = new ArrayList<>();
-            for (var certificateId : certificatesId){
-                certificates.add(getById(certificateId));
-            }
-            return certificates;
-        } catch (DataAccessException e){
-            throw new RepositoryException("Unable to handle getByPartOfTagName() request in GiftCertificateRepository", e);
-        }
-
-    }
-
-    @Override
-    public List<GiftCertificate> getByPartOfDescription(String descPart) throws RepositoryException {
-        try{
-            List<Long> certificatesId = getCertificatesIdByPart(GET_CERTIFICATE_ID_BY_DESC_PART, descPart);
-            List<GiftCertificate> certificates = new ArrayList<>();
-            for (var certificateId : certificatesId){
-                certificates.add(getById(certificateId));
-            }
-            return certificates;
-        } catch (DataAccessException e){
-            throw new RepositoryException("Unable to handle getByPartOfDescription() request in GiftCertificateRequest", e);
-        }
-
-    }
-
-    private List<Long> getCertificatesIdByPart(String sql, String part){
-        return template.query(sql, (rs, rowNum) -> rs.getLong("id"),
-                "%".concat(part).concat("%"));
     }
 }

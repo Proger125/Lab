@@ -1,15 +1,14 @@
-package com.epam.esm.entity;
+package edu.epam.esm.task.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-
-@Getter
-@Setter
 @EqualsAndHashCode(callSuper = true)
-@ToString
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class Tag extends Entity{
     private String name;
 

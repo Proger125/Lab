@@ -207,7 +207,7 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
                     oldCertificate.getPrice(), oldCertificate.getDuration(),
                     format.format(oldCertificate.getCreateDate()),
                     format.format(oldCertificate.getLastUpdateDate()));
-            return getById(id);
+            return oldCertificate;
         } catch (EmptyResultDataAccessException e){
             return null;
         } catch (DataAccessException e){

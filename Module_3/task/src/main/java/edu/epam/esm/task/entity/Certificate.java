@@ -1,19 +1,19 @@
-package com.epam.esm.entity;
+package edu.epam.esm.task.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
 @EqualsAndHashCode(callSuper = true)
-@ToString
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class GiftCertificate extends Entity{
+public class Certificate extends Entity{
     private String name;
     private String description;
     private BigDecimal price;
@@ -22,7 +22,7 @@ public class GiftCertificate extends Entity{
     private Date lastUpdateDate;
     private List<Tag> tags;
 
-    public GiftCertificate(long id, String name, String description, BigDecimal price, int duration,
+    public Certificate(long id, String name, String description, BigDecimal price, int duration,
                            Date createDate, Date lastUpdateDate, List<Tag> tags){
         super(id);
         this.name = name;

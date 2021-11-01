@@ -6,6 +6,7 @@ import edu.epam.esm.task.service.TagService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -28,6 +29,7 @@ public class TagServiceImpl implements TagService {
         return repository.findById(id);
     }
 
+    @Transactional
     @Override
     public Tag save(Tag tag) {
         Optional<Tag> optionalTag = repository.findTagByName(tag.getName());
@@ -35,5 +37,15 @@ public class TagServiceImpl implements TagService {
             return repository.save(tag);
         }
         return optionalTag.get();
+    }
+
+    @Override
+    public void deleteById(long id) {
+        repository.deleteById(id);
+    }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
     }
 }

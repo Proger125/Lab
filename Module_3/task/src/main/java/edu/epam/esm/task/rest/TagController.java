@@ -21,8 +21,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 public class TagController {
 
-    @Autowired
-    private TagService service;
+    private final TagService service;
+
+    public TagController(TagService service) {
+        this.service = service;
+    }
 
     @GetMapping(value = "/tags")
     public CollectionModel<Tag> getAll(
@@ -42,18 +45,35 @@ public class TagController {
         return CollectionModel.of(tags, link);
     }
 
-    @SuppressWarnings("OptionalIsPresent")
     @GetMapping("/tags/{id}")
     public ResponseEntity<Tag> getById(@PathVariable long id){
         Optional<Tag> optionalTag = service.getById(id);
         if (optionalTag.isPresent()){
-            return new ResponseEntity<>(optionalTag.get(), HttpStatus.OK);
+            Tag tag = optionalTag.get();
+            Link selfLink = linkTo(methodOn(TagController.class).getById(id)).withSelfRel();
+            tag.add(selfLink);
+            return new ResponseEntity<>(tag, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/tags")
     public ResponseEntity<Tag> save(@RequestBody Tag tag){
-        return new ResponseEntity<>(service.save(tag), HttpStatus.OK);
+        tag = service.save(tag);
+        Link selfLink = linkTo(methodOn(TagController.class).save(tag)).withSelfRel();
+        tag.add(selfLink);
+        return new ResponseEntity<>(tag, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/tags/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable long id){
+        service.deleteById(id);
+        return new ResponseEntity<>("Tag was deleted", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/tags")
+    public ResponseEntity<String> deleteAll(){
+        service.deleteAll();
+        return new ResponseEntity<>("All tags were deleted", HttpStatus.OK);
     }
 }

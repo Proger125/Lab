@@ -1,31 +1,29 @@
 package edu.epam.esm.task.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.Hibernate;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.util.Objects;
-import java.util.Set;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "tags")
-public class Tag{
+public class Tag extends RepresentationModel<Tag> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "tag_id")
     private long id;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true, updatable = false)
     private String name;
-
-    @ManyToMany(mappedBy = "tags")
-    @ToString.Exclude
-    private Set<Certificate> certificates;
 
     @Override
     public boolean equals(Object o) {
@@ -37,12 +35,18 @@ public class Tag{
         }
         Tag tag = (Tag) o;
         return id == tag.id &&
-                Objects.equals(name, tag.name) &&
-                Objects.equals(certificates, tag.certificates);
+                Objects.equals(name, tag.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, certificates);
+        return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + id + ", " +
+                "name = " + name + ")";
     }
 }

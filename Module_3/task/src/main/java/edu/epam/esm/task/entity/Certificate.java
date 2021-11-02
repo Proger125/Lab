@@ -5,12 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,10 +17,11 @@ import java.util.Set;
 @Table(name = "certificates")
 @Getter
 @Setter
-public class Certificate{
+public class Certificate extends RepresentationModel<Certificate> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "certificate_id")
     private long id;
 
     @Column(name = "name")
@@ -42,10 +42,7 @@ public class Certificate{
     @Column(name = "last_update_date")
     private Date lastUpdateDate;
 
-    @OneToMany(mappedBy = "certificate")
-    private Set<Order> order;
-
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "certificate_tag",
             joinColumns = {@JoinColumn(name = "certificate_id")},

@@ -33,15 +33,18 @@ public class TagController {
             @RequestParam(value = "size", defaultValue = "5", required = false) int size){
         Pageable pageable = PageRequest.of(page, size);
         Page<Tag> tags = service.getAll(pageable);
+
+        Link link = linkTo(methodOn(TagController.class).getAll(page, size)).withSelfRel();
+
         if (tags.isEmpty()){
-            return CollectionModel.empty();
+            return CollectionModel.empty(link);
         }
 
         for (var tag : tags){
             Link selfLink = linkTo(methodOn(TagController.class).getById(tag.getId())).withSelfRel();
             tag.add(selfLink);
         }
-        Link link = linkTo(methodOn(TagController.class).getAll(page, size)).withSelfRel();
+
         return CollectionModel.of(tags, link);
     }
 

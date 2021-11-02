@@ -9,7 +9,8 @@ import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.util.Objects;
-
+import java.util.Set;
+//spring.jpa.hibernate.ddl-auto=update
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,11 +20,20 @@ import java.util.Objects;
 public class Tag extends RepresentationModel<Tag> {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")
     private long id;
 
-    @Column(name = "name", unique = true, updatable = false)
+    @Column(name = "name")
     private String name;
+
+    @ManyToMany(mappedBy = "tags")
+    private Set<Certificate> certificates;
+
+    public Tag(long id, String name){
+        this.id = id;
+        this.name = name;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -34,13 +44,12 @@ public class Tag extends RepresentationModel<Tag> {
             return false;
         }
         Tag tag = (Tag) o;
-        return id == tag.id &&
-                Objects.equals(name, tag.name);
+        return Objects.equals(name, tag.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(name);
     }
 
     @Override

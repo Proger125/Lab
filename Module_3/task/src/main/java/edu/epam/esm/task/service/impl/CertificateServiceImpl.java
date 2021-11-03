@@ -76,10 +76,10 @@ public class CertificateServiceImpl implements CertificateService {
         boolean result = false;
         if (repository.existsById(id)){
             if (dto.getPrice() == null){
-                repository.updateCertificateDuration(dto.getDuration(), id);
+                repository.updateCertificateDuration(dto.getDuration(), dto.getUpdateDate(), id);
                 result = true;
             } else if (dto.getDuration() == null){
-                repository.updateCertificatePrice(dto.getPrice(), id);
+                repository.updateCertificatePrice(dto.getPrice(), dto.getUpdateDate(), id);
                 result = true;
             }
         }

@@ -2,7 +2,6 @@ package edu.epam.esm.task.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 import org.springframework.hateoas.RepresentationModel;
@@ -12,7 +11,6 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "certificates")
 @Getter
@@ -49,6 +47,10 @@ public class Certificate extends RepresentationModel<Certificate> {
             inverseJoinColumns = {@JoinColumn(name = "tag_id")})
     private Set<Tag> tags;
 
+    public Certificate(){
+        tags = new HashSet<>();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -58,8 +60,7 @@ public class Certificate extends RepresentationModel<Certificate> {
             return false;
         }
         Certificate that = (Certificate) o;
-        return id == that.id &&
-                Objects.equals(name, that.name) &&
+        return Objects.equals(name, that.name) &&
                 Objects.equals(description, that.description) &&
                 Objects.equals(price, that.price) &&
                 Objects.equals(duration, that.duration) &&
@@ -70,7 +71,7 @@ public class Certificate extends RepresentationModel<Certificate> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, price, duration, createDate, lastUpdateDate, tags);
+        return Objects.hash(name, description, price, duration, createDate, lastUpdateDate, tags);
     }
 
     @Override

@@ -92,8 +92,9 @@ public class CertificateController {
     }
 
     @PutMapping("/certificates/{id}")
-    public ResponseEntity<String> updateDuration(@PathVariable long id,
+    public ResponseEntity<String> updateCertificate(@PathVariable long id,
                                                  @RequestBody CertificateUpdateDto dto){
+        dto.setUpdateDate(new Date());
         boolean result = service.updateCertificate(id, dto);
 
         if (result){

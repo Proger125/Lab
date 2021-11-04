@@ -3,6 +3,7 @@ package edu.epam.esm.task.rest;
 import edu.epam.esm.task.entity.Certificate;
 import edu.epam.esm.task.entity.Tag;
 import edu.epam.esm.task.entity.dto.CertificateUpdateDto;
+import edu.epam.esm.task.exception.ServiceException;
 import edu.epam.esm.task.service.CertificateService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,29 +37,37 @@ public class CertificateController {
             @RequestParam(value = "size", defaultValue = "5", required = false) int size
     ){
         Pageable pageable = PageRequest.of(page, size);
-        Page<Certificate> certificates = service.getAll(pageable);
+        try {
+            Page<Certificate> certificates = service.getAll(pageable);
 
-        Link link = linkTo(methodOn(CertificateController.class).getAll(page, size)).withSelfRel();
+            Link link = linkTo(methodOn(CertificateController.class).getAll(page, size)).withSelfRel();
 
-        createLinksToCertificates(certificates);
-        return CollectionModel.of(certificates, link);
+            createLinksToCertificates(certificates);
+            return CollectionModel.of(certificates, link);
+        } catch (ServiceException e){
+            return CollectionModel.empty();
+        }
     }
 
     @GetMapping("/certificates/{id}")
     public ResponseEntity<Certificate> getById(@PathVariable long id){
-        Optional<Certificate> optionalCertificate = service.getById(id);
+        try {
+            Optional<Certificate> optionalCertificate = service.getById(id);
 
-        if (optionalCertificate.isPresent()){
-            Certificate certificate = optionalCertificate.get();
-            deleteTagCertificateConnection(certificate);
-            Link selfLink = linkTo(methodOn(CertificateController.class).getById(id)).withSelfRel();
-            certificate.add(selfLink);
-            createTagsLinks(certificate);
+            if (optionalCertificate.isPresent()) {
+                Certificate certificate = optionalCertificate.get();
+                deleteTagCertificateConnection(certificate);
+                Link selfLink = linkTo(methodOn(CertificateController.class).getById(id)).withSelfRel();
+                certificate.add(selfLink);
+                createTagsLinks(certificate);
 
-            return new ResponseEntity<>(certificate, HttpStatus.OK);
+                return new ResponseEntity<>(certificate, HttpStatus.OK);
+            }
+
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ServiceException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/certificates")
@@ -68,39 +77,55 @@ public class CertificateController {
         certificate.setCreateDate(now);
         certificate.setLastUpdateDate(now);
 
-        certificate = service.save(certificate);
-        Link selfLink = linkTo(methodOn(CertificateController.class).save(certificate)).withSelfRel();
-        certificate.add(selfLink);
-        return new ResponseEntity<>(certificate, HttpStatus.OK);
+        try {
+            certificate = service.save(certificate);
+            Link selfLink = linkTo(methodOn(CertificateController.class).save(certificate)).withSelfRel();
+            certificate.add(selfLink);
+            return new ResponseEntity<>(certificate, HttpStatus.OK);
+        } catch (ServiceException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/certificates")
     public ResponseEntity<String> deleteAll(){
-        service.deleteAll();
+        try {
+            service.deleteAll();
 
-        return new ResponseEntity<>("All certificates were deleted", HttpStatus.OK);
+            return new ResponseEntity<>("All certificates were deleted", HttpStatus.OK);
+        } catch (ServiceException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/certificates/{id}")
     public ResponseEntity<String> deleteById(@PathVariable long id){
-        boolean result = service.deleteById(id);
+        try {
+            boolean result = service.deleteById(id);
 
-        if (result){
-            return new ResponseEntity<>("Certificate was deleted", HttpStatus.OK);
+            if (result) {
+                return new ResponseEntity<>("Certificate was deleted", HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ServiceException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/certificates/{id}")
     public ResponseEntity<String> updateCertificate(@PathVariable long id,
                                                  @RequestBody CertificateUpdateDto dto){
         dto.setUpdateDate(new Date());
-        boolean result = service.updateCertificate(id, dto);
+        try {
+            boolean result = service.updateCertificate(id, dto);
 
-        if (result){
-            return new ResponseEntity<>("Certificate was updated", HttpStatus.OK);
+            if (result) {
+                return new ResponseEntity<>("Certificate was updated", HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
+        } catch (ServiceException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-       return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/certificates/find-by-tag")
@@ -110,12 +135,16 @@ public class CertificateController {
                                                    @RequestParam(value = "size", defaultValue = "5",
                                                            required = false) int size){
         Pageable pageable = PageRequest.of(page, size);
-        Page<Certificate> certificates = service.getCertificatesByTags(tags, pageable);
+        try {
+            Page<Certificate> certificates = service.getCertificatesByTags(tags, pageable);
 
-        Link link = linkTo(methodOn(CertificateController.class).getByTags(tags, page, size)).withSelfRel();
+            Link link = linkTo(methodOn(CertificateController.class).getByTags(tags, page, size)).withSelfRel();
 
-        createLinksToCertificates(certificates);
-        return CollectionModel.of(certificates, link);
+            createLinksToCertificates(certificates);
+            return CollectionModel.of(certificates, link);
+        } catch (ServiceException e){
+            return CollectionModel.empty();
+        }
     }
 
     private void createLinksToCertificates(Page<Certificate> certificates){
